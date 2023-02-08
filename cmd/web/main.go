@@ -41,8 +41,20 @@ func main() {
 
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
+	// Initialize a new http.Server struct. We set the Addr and Handler fields
+	// that the server uses the same network address and routes as before, and
+	// the ErrorLog field so that the server now uses the custom errorLog logger
+	// the event of any problems
+	srv := &http.Server{
+		Addr:     *addr,
+		ErrorLog: errorLog,
+		Handler:  mux,
+	}
+
 	// Write messages using the two new loggers, instead of standart logger
 	infoLog.Printf("Starting server on %s", *addr)
-	err := http.ListenAndServe(*addr, mux)
+
+	// Call the ListenAndServe() method on our new http.Server struct
+	err := srv.ListenAndServe()
 	errorLog.Fatal(err)
 }
