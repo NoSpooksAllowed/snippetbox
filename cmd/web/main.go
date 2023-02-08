@@ -7,6 +7,14 @@ import (
 	"os"
 )
 
+// Define an application struct to hold the application-wide dependencies for that
+// web application. For now we'll only include fields for the tow custom loggers
+// we'll add more to ias the build progresses.
+type application struct {
+	errorLog *log.Logger
+	infoLog  *log.Logger
+}
+
 func main() {
 	// Define a new command line flag with the name "addr", a default value of ":4000"
 	// and some short help that explaining what the flag controls. The value of
