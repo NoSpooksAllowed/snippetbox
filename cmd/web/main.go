@@ -7,6 +7,9 @@ import (
 )
 
 func main() {
+	// Define a new command line flag with the name "addr", a default value of ":4000"
+	// and some short help that explaining what the flag controls. The value of
+	// flag will be stored in the addr variable at runtime
 	addr := flag.String("addr", ":4000", "HTTP network address")
 
 	// Importantly, we use te flag.Parse() function to parse the command line
