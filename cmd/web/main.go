@@ -4,6 +4,7 @@ import (
 	"flag"
 	"log"
 	"net/http"
+	"os"
 )
 
 func main() {
@@ -18,6 +19,19 @@ func main() {
 	// otherwise it will always contain the default value of ":4000"
 	// If any error encountered during parsing te application will be terminated
 	flag.Parse()
+
+	// Use log.New() to create a logger for writing information messages. This function
+	// has three parameters: the destinate to write the logs to (os.Stdout), a static
+	// prefix for message (INFO followed by a tab), and flags to indicate what
+	// additional information to include (local date and time). Note that the flags
+	// are joined using the bitwise OR operator |
+	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+
+	// Create a logger for writing error messsages in the same way, but use stderr
+	// the desitnation and se the log.Lshortfile flag to include the relevante
+	// file name and line number.
+	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", home)
 	mux.HandleFunc("/snippet", showSnippet)
@@ -27,10 +41,8 @@ func main() {
 
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
-	// The value returned from te flag.String() functions is a pointer the flag
-	// value, not the value itself. So we need to dereference the pointer
-	// before using it
-	log.Printf("Starting server on %s", *addr)
+	// Write messages using the two new loggers, instead of standart logger
+	infoLog.Printf("Starting server on %s", *addr)
 	err := http.ListenAndServe(*addr, mux)
-	log.Fatal(err)
+	errorLog.Fatal(err)
 }
