@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 	"text/template"
 )
 
-func home(w http.ResponseWriter, r *http.Request) {
+// Change the signature of the home handler so it is defined as a method against
+// *application
+func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
 		http.NotFound(w, r)
 		return
@@ -28,19 +29,26 @@ func home(w http.ResponseWriter, r *http.Request) {
 	// response to the user.
 	ts, err := template.ParseFiles(files...)
 	if err != nil {
-		log.Println(err.Error())
+		// Because the home handler function is now a method against application
+		// it can access it fields, including the error logger. We'll write the
+		// message to this instead of the standart logger.
+		app.errorLog.Println(err.Error())
 		http.Error(w, "Internal Server Error", 500)
 		return
 	}
 
 	err = ts.Execute(w, nil)
 	if err != nil {
-		log.Println(err.Error())
+		// Also update the code here to use the error logger from the application
+		// struct.
+		app.errorLog.Println(err.Error())
 		http.Error(w, "Internal Server Error", 500)
 	}
 }
 
-func showSnippet(w http.ResponseWriter, r *http.Request) {
+// Change the signature of the showSnippet handler so it is defined as a method
+// against *application
+func (app *application) showSnippet(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
 	if err != nil || id < 1 {
 		http.NotFound(w, r)
@@ -50,7 +58,9 @@ func showSnippet(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Display a specific snippet with ID %d...", id)
 }
 
-func createSnippet(w http.ResponseWriter, r *http.Request) {
+// Change the signature of the showSnippet handler so it is defined as a method
+// against *application
+func (app *application) createSnippet(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		w.Header().Set("Allow", "POST")
 		http.Error(w, "Method Not Allowed", 405)
