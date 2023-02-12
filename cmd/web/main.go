@@ -46,17 +46,6 @@ func main() {
 		errorLog: errorLog,
 	}
 
-	// Swap the route declarations to use the applcation struct's methods as the
-	// handler functions.
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", app.home)
-	mux.HandleFunc("/snippet", app.showSnippet)
-	mux.HandleFunc("/snippet/create", app.createSnippet)
-
-	fileServer := http.FileServer(http.Dir("./ui/static/"))
-
-	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
-
 	// Initialize a new http.Server struct. We set the Addr and Handler fields
 	// that the server uses the same network address and routes as before, and
 	// the ErrorLog field so that the server now uses the custom errorLog logger
@@ -64,7 +53,7 @@ func main() {
 	srv := &http.Server{
 		Addr:     *addr,
 		ErrorLog: errorLog,
-		Handler:  mux,
+		Handler:  app.routes(),
 	}
 
 	// Write messages using the two new loggers, instead of standart logger
