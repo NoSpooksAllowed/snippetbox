@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/NoSpooksAllowed/snippetbox/pkg/models/mysql"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
 )
@@ -18,6 +19,7 @@ import (
 type application struct {
 	errorLog *log.Logger
 	infoLog  *log.Logger
+	snippets *mysql.SnippetModel
 }
 
 func main() {
@@ -68,9 +70,11 @@ func main() {
 	defer db.Close()
 
 	// Initialize a new instance of application containing the dependencies.
+	// and add it mysql.SnippetModel instance
 	app := &application{
 		infoLog:  infoLog,
 		errorLog: errorLog,
+		snippets: &mysql.SnippetModel{DB: db},
 	}
 
 	// Initialize a new http.Server struct. We set the Addr and Handler fields
