@@ -18,6 +18,7 @@ type templateData struct {
 	Form        *forms.Form
 	Snippet     *models.Snippet
 	Snippets    []*models.Snippet
+	Flash       string
 }
 
 func newTemplateCache(dir string) (map[string]*template.Template, error) {
