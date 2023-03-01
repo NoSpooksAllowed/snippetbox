@@ -8,9 +8,11 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/NoSpooksAllowed/snippetbox/pkg/models/mysql"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/golangcollege/sessions"
 	"github.com/joho/godotenv"
 )
 
@@ -22,6 +24,7 @@ type application struct {
 	infoLog       *log.Logger
 	snippets      *mysql.SnippetModel
 	templateCache map[string]*template.Template
+	session       *sessions.Session
 }
 
 func main() {
@@ -39,6 +42,11 @@ func main() {
 	// Define a new command-line flag for the MySQL DSN string.
 	authStr := fmt.Sprintf("%s:%s@/snippetbox?parseTime=true", envs["USERNAME"], envs["PASSWORD"])
 	dsn := flag.String("dsn", authStr, "MySQL database")
+
+	// Define a new command-line flag for the session secret (a random key which
+	// will be used to encrypt and authenticate session cookies). It should be 32
+	// bytes long
+	secret := flag.String("secret", "s6Ndh+pPbnzHbS*+9Pk8qGWhTzbpa@ge", "Secret key")
 
 	// Importantly, we use te flag.Parse() function to parse the command line
 	// This reads in the command-line flag value and assigns it to the addr
@@ -77,14 +85,22 @@ func main() {
 		errorLog.Fatal(err)
 	}
 
+	// Use the sessions.New() function to initialize a new session manager,
+	// passing in the secret key as the parameter. Then we congigure it so
+	// sessions always expires after 12 hours.
+	session := sessions.New([]byte(*secret))
+	session.Lifetime = 12 * time.Hour
+
 	// Initialize a new instance of application containing the dependencies.
 	// and add it mysql.SnippetModel instance
 	// And add templateCache to the application dependencies.
+	// And add session maganger to our application dependencies.
 	app := &application{
 		infoLog:       infoLog,
 		errorLog:      errorLog,
 		snippets:      &mysql.SnippetModel{DB: db},
 		templateCache: templateCache,
+		session:       session,
 	}
 
 	// Initialize a new http.Server struct. We set the Addr and Handler fields
