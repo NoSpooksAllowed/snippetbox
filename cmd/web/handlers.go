@@ -81,6 +81,8 @@ func (app *application) createSnippet(w http.ResponseWriter, r *http.Request) {
 	// form.Form object as the data
 	if !form.Valid() {
 		app.render(w, r, "create.page.tmpl", &templateData{Form: form})
+
+		return
 	}
 
 	// Because the form data (which type url.Values) has been anonymously embedded
