@@ -90,6 +90,7 @@ func main() {
 	// sessions always expires after 12 hours.
 	session := sessions.New([]byte(*secret))
 	session.Lifetime = 12 * time.Hour
+	session.Secure = true
 
 	// Initialize a new instance of application containing the dependencies.
 	// and add it mysql.SnippetModel instance
@@ -116,8 +117,10 @@ func main() {
 	// Write messages using the two new loggers, instead of standart logger
 	infoLog.Printf("Starting server on %s", *addr)
 
-	// Call the ListenAndServe() method on our new http.Server struct
-	err = srv.ListenAndServe()
+	// Use the ListenAndServeTLS() method to start the HTTPS server. We
+	// pass in the paths to the TLS certificate and correpsonding private key and public key to
+	// the two parameters.
+	err = srv.ListenAndServeTLS("./tls/cert.pem", "./tls/key.pem")
 	errorLog.Fatal(err)
 }
 
