@@ -26,6 +26,8 @@ type application struct {
 	snippets      *mysql.SnippetModel
 	templateCache map[string]*template.Template
 	session       *sessions.Session
+	// Add a new users field to the application struct.
+	users *mysql.UserModel
 }
 
 func main() {
@@ -97,12 +99,15 @@ func main() {
 	// and add it mysql.SnippetModel instance
 	// And add templateCache to the application dependencies.
 	// And add session maganger to our application dependencies.
+	// Initialize a mysql.UserModel instance and add it to the application
+	// dependencies.
 	app := &application{
 		infoLog:       infoLog,
 		errorLog:      errorLog,
 		snippets:      &mysql.SnippetModel{DB: db},
 		templateCache: templateCache,
 		session:       session,
+		users:         &mysql.UserModel{DB: db},
 	}
 
 	// Initialize a tls.Config struct to hold the non-default TLS settings we want
