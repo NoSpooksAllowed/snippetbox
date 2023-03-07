@@ -72,3 +72,9 @@ func (app *application) addDefaultData(td *templateData, r *http.Request) *templ
 
 	return td
 }
+
+// The aunthenticatedUser method returns the ID of the current user from the
+// session, or zero if the request is from an unauthenticated user.
+func (app *application) aunthenticatedUser(r *http.Request) int {
+	return app.session.GetInt(r, "userID")
+}
