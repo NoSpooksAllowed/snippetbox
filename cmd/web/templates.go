@@ -15,6 +15,7 @@ import (
 // to it as the build progresses.
 type templateData struct {
 	AuthenticatedUser int
+	CSRFToken         string
 	CurrentYear       int
 	Form              *forms.Form
 	Snippet           *models.Snippet
