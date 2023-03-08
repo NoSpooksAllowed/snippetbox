@@ -17,6 +17,10 @@ import (
 	"github.com/joho/godotenv"
 )
 
+type contextKey string
+
+var contextKeyUser = contextKey("user")
+
 // Define an application struct to hold the application-wide dependencies for that
 // web application. For now we'll only include fields for the tow custom loggers
 // we'll add more to ias the build progresses.
