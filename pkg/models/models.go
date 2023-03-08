@@ -30,5 +30,5 @@ type User struct {
 	Name           string
 	Email          string
 	HashedPassword []byte
-	Create         time.Time
+	Created        time.Time
 }
