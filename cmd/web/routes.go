@@ -15,7 +15,7 @@ func (app *application) routes() http.Handler {
 	// Create a new middleware chain containing the middleware specific to our
 	// dynamic application routes. For now, this chain will only contain
 	// the session middleware but we'll add more to it later.
-	dynamicMiddleware := alice.New(app.session.Enable, NoSurf)
+	dynamicMiddleware := alice.New(app.session.Enable, NoSurf, app.authenticate)
 
 	// Swap the route declarations to use the applcation struct's methods as the
 	// handler functions.
