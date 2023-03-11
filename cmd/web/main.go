@@ -11,6 +11,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/NoSpooksAllowed/snippetbox/pkg/models"
 	"github.com/NoSpooksAllowed/snippetbox/pkg/models/mysql"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/golangcollege/sessions"
@@ -25,13 +26,21 @@ var contextKeyUser = contextKey("user")
 // web application. For now we'll only include fields for the tow custom loggers
 // we'll add more to ias the build progresses.
 type application struct {
-	errorLog      *log.Logger
-	infoLog       *log.Logger
-	snippets      *mysql.SnippetModel
+	errorLog *log.Logger
+	infoLog  *log.Logger
+	snippets interface {
+		Insert(string, string, string) (int, error)
+		Get(int) (*models.Snippet, error)
+		Latest() ([]*models.Snippet, error)
+	}
 	templateCache map[string]*template.Template
 	session       *sessions.Session
 	// Add a new users field to the application struct.
-	users *mysql.UserModel
+	users interface {
+		Insert(string, string, string) error
+		Authenticate(string, string) (int, error)
+		Get(int) (*models.User, error)
+	}
 }
 
 func main() {
