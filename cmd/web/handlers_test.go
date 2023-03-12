@@ -96,7 +96,7 @@ func TestSignupUser(t *testing.T) {
 		{"Invalid email (missing local part)", "Bob", "@example.com", "validPa$$word",
 			csrfToken, http.StatusOK, []byte("This field is invalid")},
 		{"Short password", "Bob", "bob@example.com", "pa$$word", csrfToken, http.StatusOK,
-			[]byte("This field is too short (minimum is 10 characters")},
+			[]byte("This field is too short (minimum is 10)")},
 		{"Duplicate email", "Bob", "dupe@example.com", "validPa$$word", csrfToken, http.StatusOK,
 			[]byte("Address is already in use")},
 		{"Invalid CSRF Token", "", "", "", "wrongToken", http.StatusBadRequest, nil},
@@ -108,7 +108,7 @@ func TestSignupUser(t *testing.T) {
 			form.Add("name", tt.userName)
 			form.Add("email", tt.userEmail)
 			form.Add("password", tt.userPassword)
-			form.Add("csrf_toke", tt.csrfToken)
+			form.Add("csrf_token", tt.csrfToken)
 
 			code, _, body := ts.postForm(t, "/user/signup", form)
 
@@ -121,4 +121,5 @@ func TestSignupUser(t *testing.T) {
 			}
 		})
 	}
+
 }
