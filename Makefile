@@ -2,7 +2,7 @@ build:
 	go build ./cmd/web/.
 
 run:
-	go build ./cmd/web/. && ./web
+	go run ./...	
 
 clean:
 	rm web
