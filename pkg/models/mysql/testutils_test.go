@@ -10,7 +10,7 @@ import (
 )
 
 func newTestDB(t *testing.T) (*sql.DB, func()) {
-	envs, err := godotenv.Read(".env")
+	envs, err := godotenv.Read("../../../.env")
 
 	if err != nil {
 		t.Fatal("Error loading .env file")
