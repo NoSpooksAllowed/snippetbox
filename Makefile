@@ -7,5 +7,8 @@ run:
 clean:
 	rm web
 
-test:
+unit-test:
 	go test -v ./cmd/web/
+
+integration-test:
+	go test -v ./pkg/models/mysql
